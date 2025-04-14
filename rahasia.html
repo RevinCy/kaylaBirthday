@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pesan Rahasia untuk Kayla</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+  <style>
+    :root {
+      --primary-color: #6a0dad;
+      --secondary-color: #0072ff;
+      --accent-color: #ff9e9e;
+      --text-color: #2d3748;
+    }
+
+    body {
+      background-color: #000;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      position: relative;
+      overflow-x: hidden;
+      padding: 20px;
+    }
+
+    .lock-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      transition: all 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    }
+
+    .lock-screen.unlocked {
+      transform: translateY(-100%);
+    }
+
+    .lock-icon {
+      font-size: clamp(3rem, 8vw, 4rem);
+      color: white;
+      margin-bottom: clamp(1rem, 4vw, 2rem);
+      animation: pulse 2s infinite;
+    }
+
+    .password-container {
+      background: rgba(255, 255, 255, 0.1);
+      padding: clamp(1.5rem, 5vw, 2rem);
+      border-radius: 1rem;
+      backdrop-filter: blur(10px);
+      width: clamp(250px, 90%, 300px);
+      text-align: center;
+    }
+
+    .password-container h3 {
+      color: white;
+      margin-bottom: 1.5rem;
+      font-size: clamp(1.2rem, 5vw, 1.5rem);
+    }
+
+    .password-input {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      border-radius: 50px;
+      padding: 0.8rem 1.5rem;
+      width: 100%;
+      color: white;
+      text-align: center;
+      font-size: clamp(1rem, 4vw, 1.2rem);
+      letter-spacing: 3px;
+      margin-bottom: 1rem;
+    }
+
+    .password-input:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--accent-color);
+    }
+
+    .unlock-button {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 0.8rem 2rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(106, 13, 173, 0.4);
+      width: 100%;
+      max-width: 200px;
+    }
+
+    .unlock-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 7px 20px rgba(106, 13, 173, 0.5);
+    }
+
+    .error-message {
+      color: #ff4d4d;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      height: 20px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .error-message.show {
+      opacity: 1;
+    }
+
+    .content-wrapper {
+      width: 100%;
+      max-width: 650px;
+      margin: 0 auto;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px 0;
+    }
+
+    .secret-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 1.5rem;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+      padding: clamp(1.5rem, 5vw, 3rem);
+      width: 95%;
+      position: relative;
+      overflow: visible;
+      opacity: 0;
+      transform: scale(0.8);
+      transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      margin: 0 auto;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .secret-card.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .envelope-wrapper {
+      position: relative;
+      perspective: 1000px;
+      margin-bottom: clamp(1rem, 4vw, 2rem);
+      height: clamp(150px, 30vw, 200px);
+    }
+
+    .envelope {
+      width: clamp(200px, 60vw, 300px);
+      height: clamp(140px, 40vw, 200px);
+      background: linear-gradient(135deg, #ff7eb9, #ff65a3);
+      margin: 0 auto;
+      position: relative;
+      border-radius: 0 0 20px 20px;
+      transform-style: preserve-3d;
+      transform-origin: top;
+      transition: transform 1s;
+    }
+
+    .envelope-flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 50%;
+      background: linear-gradient(135deg, #ff65a3, #7f7fd5);
+      transform-origin: top;
+      transition: transform 1s;
+      clip-path: polygon(0 0, 50% 100%, 100% 0);
+      z-index: 2;
+    }
+
+    .envelope-opened .envelope-flap {
+      transform: rotateX(180deg);
+    }
+
+    .envelope-letter {
+      position: absolute;
+      top: 10%;
+      left: 10%;
+      width: 80%;
+      height: 90%;
+      background: white;
+      z-index: 1;
+      transition: all 1s;
+      transform: translateY(0);
+    }
+
+    .envelope-opened .envelope-letter {
+      transform: translateY(-100%);
+    }
+
+    .secret-card h1 {
+      font-size: clamp(1.5rem, 6vw, 2.8rem);
+      font-weight: 800;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      position: relative;
+      line-height: 1.3;
+    }
+
+    .secret-card h1::after {
+      content: "";
+      position: absolute;
+      left: 25%;
+      bottom: -10px;
+      width: 50%;
+      height: 4px;
+      background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+      border-radius: 2px;
+    }
+
+    .secret-card p {
+      font-size: clamp(1rem, 3vw, 1.2rem);
+      color: var(--text-color);
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+      text-align: left;
+    }
+
+    .signature {
+      font-family: 'Brush Script MT', cursive;
+      font-size: clamp(1.5rem, 5vw, 2rem);
+      color: var(--primary-color);
+      text-align: right;
+      margin-top: 2rem;
+    }
+
+    .hidden-message {
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 1rem;
+      padding: clamp(1rem, 4vw, 1.5rem);
+      margin-top: 2rem;
+      border-left: 4px solid var(--accent-color);
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: all 0.8s ease;
+    }
+
+    /* Saat dibuka */
+    .hidden-message.revealed {
+      max-height: 500px; /* Increased max-height */
+      overflow-y: auto;
+      opacity: 1;
+    }
+
+    .reveal-button {
+      background: linear-gradient(135deg, var(--accent-color), #ffb6c1);
+      color: var(--text-color);
+      border: none;
+      border-radius: 50px;
+      padding: 0.6rem 1.5rem;
+      font-weight: 600;
+      margin-top: 1.5rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255, 158, 158, 0.4);
+      display: block;
+      width: 100%;
+      max-width: 300px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .reveal-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 7px 20px rgba(255, 158, 158, 0.5);
+    }
+
+    .starry-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 4s infinite;
+      opacity: 0;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 1; }
+    }
+
+    .shooting-star {
+      position: absolute;
+      width: 100px;
+      height: 2px;
+      background: linear-gradient(to right, rgba(255,255,255,0), white);
+      transform: rotate(-45deg);
+      animation-name: shooting;
+      animation-timing-function: ease-out;
+      opacity: 0;
+    }
+
+    @keyframes shooting {
+      0% { transform: translateX(-100px) translateY(-100px) rotate(-45deg); opacity: 1; }
+      20% { opacity: 1; }
+      40% { opacity: 0; }
+      100% { transform: translateX(500px) translateY(500px) rotate(-45deg); opacity: 0; }
+    }
+
+    .polaroid {
+      background: white;
+      padding: clamp(0.5rem, 3vw, 1rem);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      transform: rotate(-3deg);
+      max-width: clamp(180px, 60vw, 250px);
+      margin: 2rem auto;
+      transition: all 0.3s ease;
+    }
+
+    .polaroid:hover {
+      transform: rotate(0) scale(1.05);
+    }
+
+    .polaroid-img {
+      width: 100%;
+      height: clamp(100px, 30vw, 150px);
+      background-color: #f0f0f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      overflow: hidden;
+    }
+
+    .polaroid-img span {
+      font-size: clamp(50px, 15vw, 80px);
+    }
+
+    .polaroid-caption {
+      font-family: 'Comic Sans MS', cursive;
+      text-align: center;
+      padding-bottom: 0.5rem;
+      color: var(--text-color);
+      font-size: clamp(0.8rem, 3vw, 1rem);
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.2); opacity: 0.7; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .heart {
+      position: absolute;
+      font-size: clamp(16px, 4vw, 24px);
+      color: #ff6b6b;
+      animation: float-heart 4s linear infinite;
+      z-index: -1;
+      opacity: 0;
+    }
+
+    @keyframes float-heart {
+      0% { transform: translateY(0) translateX(0) rotate(0); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 0.5; }
+      100% { transform: translateY(-100px) translateX(20px) rotate(45deg); opacity: 0; }
+    }
+
+    /* Scroll button */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-size: 1.5rem;
+      animation: bounce 2s infinite;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      z-index: 5;
+    }
+
+    .scroll-indicator.visible {
+      opacity: 1;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {transform: translateY(0) translateX(-50%);}
+      40% {transform: translateY(-20px) translateX(-50%);}
+      60% {transform: translateY(-10px) translateX(-50%);}
+    }
+
+    /* Extra responsiveness for very small screens */
+    @media (max-width: 350px) {
+      .secret-card h1 {
+        font-size: 1.3rem;
+      }
+      
+      .secret-card p {
+        font-size: 0.9rem;
+      }
+      
+      .polaroid {
+        max-width: 150px;
+      }
+      
+      .polaroid-img {
+        height: 80px;
+      }
+      
+      .polaroid-img span {
+        font-size: 40px;
+      }
+      
+      .polaroid-caption {
+        font-size: 0.7rem;
+      }
+      
+      .signature {
+        font-size: 1.3rem;
+      }
+    }
+
+    /* Landscape orientation fix */
+    @media (max-height: 500px) and (orientation: landscape) {
+      .envelope-wrapper {
+        height: 120px;
+      }
+      
+      .envelope {
+        width: 180px;
+        height: 120px;
+      }
+      
+      .secret-card {
+        padding: 1rem;
+        max-height: 85vh;
+        overflow-y: auto;
+      }
+      
+      .polaroid {
+        margin: 1rem auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Lock Screen -->
+  <div class="lock-screen" id="lockScreen">
+    <div class="lock-icon">🔒</div>
+    <div class="password-container">
+      <h3>Pesan Rahasia</h3>
+      <input type="password" class="password-input" id="passwordInput" placeholder="****" autocomplete="off">
+      <div class="error-message" id="errorMessage">Password salah. Coba lagi.</div>
+      <button class="unlock-button" id="unlockButton">Buka</button>
+    </div>
+  </div>
+
+  <!-- Starry Background -->
+  <div class="starry-background" id="starryBackground"></div>
+
+  <!-- Scroll indicator -->
+  <div class="scroll-indicator" id="scrollIndicator">⬇️</div>
+
+  <!-- Content Wrapper -->
+  <div class="content-wrapper">
+    <!-- Secret Card -->
+    <div class="secret-card" id="secretCard">
+      <div class="envelope-wrapper" id="envelopeWrapper">
+        <div class="envelope" id="envelope">
+          <div class="envelope-flap"></div>
+          <div class="envelope-letter"></div>
+        </div>
+      </div>
+      
+      <h1>Secret Message Kayla</h1>
+      
+      <div class="polaroid">
+        <div class="polaroid-img">
+          <span>👑</span>
+        </div>
+        <div class="polaroid-caption">Sweet 16!</div>
+      </div>
+      
+      <p>
+        <strong>Dear Kayla,</strong>
+      </p>
+      
+      <p>
+        Jika kamu membuka pesan rahasia ini, berarti hari spesialmu telah tiba! 
+        Di ulang tahunmu yang ke-16 ini, aku ingin memberimu beberapa kata yang 
+        mungkin tidak kusampaikan secara langsung.
+      </p>
+      
+      <p>
+        Kamu adalah seseorang yang luar biasa dengan caramu sendiri. Setiap tawa, 
+        senyum, bahkan air mata yang kamu bagi telah membuat dunia ini menjadi tempat 
+        yang lebih indah. Perjalananmu menuju 16 tahun ini penuh dengan perjuangan, 
+        keberhasilan, dan mungkin beberapa kegagalan, tapi itulah yang membuatmu menjadi 
+        pribadi yang kuat dan inspiratif seperti sekarang.
+      </p>
+      
+      <p>
+        Di usia yang penuh makna ini, kamu berada di ambang petualangan baru yang menakjubkan. 
+        Percayalah pada dirimu sendiri dan ingatlah bahwa kamu memiliki kekuatan untuk 
+        mewujudkan semua mimpimu. Jangan takut untuk bermimpi besar, karena langit bahkan 
+        bukan batasnya.
+      </p>
+      
+      <button class="reveal-button" id="revealButton">Secret Message</button>
+      
+      <div class="hidden-message" id="hiddenMessage">
+        <p>
+          Ada rahasia kecil yang ingin kusampaikan padamu: 
+          oiyaa aku juga lupa ngaku umurnya berapa pas di anon, jujur aku kelahiran 02 jadi jauh
+          sama kamu, bebas masih mau chat atau nggk emang niat nya iseng hehhe karena pas aku ungkapin
+          umur pada ngeskipp akuuu jadii mohonn maaf kay bukan ngebohongin.
+        </p>
+        
+        <p>
+          kehidupan tidak selalu tentang 
+          tujuan akhir, tapi tentang perjalanan itu sendiri. Nikmati setiap momen, baik 
+          saat-saat bahagia maupun saat-saat sulit, karena semua itu akan membentukmu 
+          menjadi versi terbaikmu.
+        </p>
+        
+        <p>
+          Di hari spesialmu ini, aku berharap kamu selalu dikelilingi kebahagiaan, kesehatan, 
+          dan keberuntungan. Semoga semua pintumu terbuka lebar, dan jalanmu selalu terang.
+        </p>
+        
+        <p>
+          Jangan pernah lupa bahwa kamu dicintai. Selamat ulang tahun, Kayla!
+        </p>
+      </div>
+      
+      <div class="signature">
+        Created By,<br>
+        Hilmi
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Password untuk membuka pesan rahasia
+    const correctPassword = "2009"; // Tahun kelahiran Kayla
+
+    // Elements
+    const lockScreen = document.getElementById('lockScreen');
+    const secretCard = document.getElementById('secretCard');
+    const passwordInput = document.getElementById('passwordInput');
+    const unlockButton = document.getElementById('unlockButton');
+    const errorMessage = document.getElementById('errorMessage');
+    const revealButton = document.getElementById('revealButton');
+    const hiddenMessage = document.getElementById('hiddenMessage');
+    const envelope = document.getElementById('envelope');
+    const starryBackground = document.getElementById('starryBackground');
+    const scrollIndicator = document.getElementById('scrollIndicator');
+
+    // Focus on password input when page loads
+    window.addEventListener('load', function() {
+      passwordInput.focus();
+    });
+
+    // Cek password
+    unlockButton.addEventListener('click', checkPassword);
+    passwordInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        checkPassword();
+      }
+    });
+
+    function checkPassword() {
+      if (passwordInput.value === correctPassword) {
+        lockScreen.classList.add('unlocked');
+        setTimeout(() => {
+          createStarryBackground();
+          secretCard.classList.add('visible');
+          
+          // Show scroll indicator if content is scrollable
+          setTimeout(() => {
+            if (secretCard.scrollHeight > secretCard.clientHeight) {
+              scrollIndicator.classList.add('visible');
+              
+              // Hide scroll indicator when scrolling starts
+              secretCard.addEventListener('scroll', function() {
+                scrollIndicator.classList.remove('visible');
+              }, { once: true });
+            }
+          }, 2000);
+          
+          setTimeout(() => {
+            envelope.classList.add('envelope-opened');
+            createHearts();
+          }, 1000);
+        }, 800);
+      } else {
+        errorMessage.classList.add('show');
+        setTimeout(() => {
+          errorMessage.classList.remove('show');
+        }, 3000);
+        passwordInput.value = '';
+        passwordInput.focus();
+      }
+    }
+
+    // Menampilkan pesan tersembunyi
+    revealButton.addEventListener('click', function() {
+      hiddenMessage.classList.toggle('revealed');
+      if (hiddenMessage.classList.contains('revealed')) {
+        revealButton.textContent = 'Sembunyikan Pesan';
+        
+        // Check if we need scroll indicator after expanding content
+        setTimeout(() => {
+          if (secretCard.scrollHeight > secretCard.scrollTop + secretCard.clientHeight) {
+            scrollIndicator.classList.add('visible');
+          }
+        }, 800);
+      } else {
+        revealButton.textContent = 'Baca Pesan Tersembunyi';
+      }
+    });
+
+    // Fungsi untuk membuat background bintang
+    function createStarryBackground() {
+      // Optimized for mobile - create fewer stars on small screens
+      const screenWidth = window.innerWidth;
+      const starCount = screenWidth < 768 ? 100 : 200;
+      
+      // Bintang biasa
+      for (let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.top = `${Math.random() * 100}%`;
+        
+        // Ukuran acak
+        const size = Math.random() * 3 + 1;
+        star.style.width = star.style.height = `${size}px`;
+        
+        // Animasi acak
+        star.style.animationDelay = `${Math.random() * 4}s`;
+        star.style.animationDuration = `${Math.random() * 2 + 3}s`;
+        
+        starryBackground.appendChild(star);
+      }
+
+      // Shooting stars - fewer on mobile
+      const shootingStarInterval = screenWidth < 768 ? 4000 : 2000;
+      setInterval(() => {
+        createShootingStar();
+      }, shootingStarInterval);
+    }
+
+    // Fungsi untuk membuat bintang jatuh
+    function createShootingStar() {
+      const shootingStar = document.createElement('div');
+      shootingStar.className = 'shooting-star';
+      shootingStar.style.left = `${Math.random() * 80}%`;
+      shootingStar.style.top = `${Math.random() * 40}%`;
+      shootingStar.style.animationDuration = `${Math.random() * 2 + 1}s`;
+      starryBackground.appendChild(shootingStar);
+      
+      setTimeout(() => {
+        shootingStar.remove();
+      }, 3000);
+    }
+
+    // Fungsi untuk membuat efek hati mengambang
+    function createHearts() {
+      // Fewer hearts on mobile
+      const screenWidth = window.innerWidth;
+      const heartInterval = screenWidth < 768 ? 1500 : 800;
+      
+      setInterval(() => {
+        const heart = document.createElement('div');
+        heart.className = 'heart';
+        heart.innerHTML = '❤️';
+        heart.style.left = `${Math.random() * 90 + 5}%`;
+        heart.style.bottom = '10%';
+        heart.style.animationDuration = `${Math.random() * 2 + 3}s`;
+        document.body.appendChild(heart);
+        
+        setTimeout(() => {
+          heart.remove();
+        }, 5000);
+      }, heartInterval);
+    }
+    
+    // Handle viewport resize
+    window.addEventListener('resize', function() {
+      // Clear and recreate stars when viewport changes significantly
+      if (lockScreen.classList.contains('unlocked')) {
+        starryBackground.innerHTML = '';
+        createStarryBackground();
+      }
+    });
+  </script>
+</body>
+</html>

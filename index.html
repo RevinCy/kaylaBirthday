@@ -439,10 +439,66 @@
       0%, 100% { opacity: 0.2; }
       50% { opacity: 1; transform: scale(1.5); }
     }
+    
+    /* Navigasi Tombol */
+    .nav-button {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 50px;
+      height: 50px;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+      font-weight: bold;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+    
+    .nav-button:hover {
+      background: rgba(255, 255, 255, 0.4);
+      transform: translateY(-50%) scale(1.1);
+    }
+    
+    .nav-button.left {
+      left: 15px;
+    }
+    
+    .nav-button.right {
+      right: 15px;
+    }
+    
+    @media (max-width: 768px) {
+      .nav-button {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+      }
+      
+      .nav-button.left {
+        left: 10px;
+      }
+      
+      .nav-button.right {
+        right: 10px;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="stars-container" id="starsContainer"></div>
+
+  <!-- Tombol Navigasi -->
+  <div class="nav-button left" id="prevButton">←</div>
+  <div class="nav-button right" id="nextButton">→</div>
 
   <div class="container position-relative">
     <div class="birthday-card mx-auto">
@@ -477,13 +533,13 @@
         
         <div class="special-wishes" id="specialWishes">
           <p>
-            Kayla, kamu adalah orang yang luar biasa! Semoga di tahun barumu ini, 
+            Kayla, Selamat Ulang tahun! Semoga di tahunmu ini, 
             kamu selalu dikelilingi oleh kebahagiaan, kesuksesan, dan orang-orang 
             yang menyayangimu. Teruslah bermimpi besar dan percaya pada dirimu sendiri!
           </p>
         </div>
         
-        <p class="from">Dari sahabat yang akan selalu mendukungmu <span class="emoji">❤️</span></p>
+        <p class="from">By Hilmi<span class="emoji">💪</span></p>
       </div>
     </div>
   </div>
@@ -512,12 +568,21 @@
       card.style.transform = 'rotateY(0deg) rotateX(0deg)';
     });
 
-    // Fungsi untuk umur acak atau diisi manual
     function setAge() {
-      // Ganti angka ini dengan umur Kayla yang sebenarnya
-      const age = Math.floor(Math.random() * 10) + 18;
-      document.getElementById('age').textContent = age;
+      const targetAge = 16; // karena lahir 2009 di tahun 2025
+      let current = 0;
+      const span = document.getElementById('age');
+
+      const interval = setInterval(() => {
+        current = Math.floor(Math.random() * 30); // acak angka 0 - 29
+        span.textContent = current;
+
+        if (current === targetAge) {
+          clearInterval(interval); // stop kalau udah ketemu 16
+        }
+      }, 100); // ganti angka tiap 100ms
     }
+
     setAge();
 
     // Fungsi untuk menambahkan bintang-bintang
@@ -682,6 +747,15 @@
     card.addEventListener('mouseleave', () => {
       card.style.transition = 'all 1s ease';
       card.style.transform = 'rotateY(0deg) rotateX(0deg)';
+    });
+    
+    // Tombol navigasi
+    document.getElementById('prevButton').addEventListener('click', function() {
+      window.location.href = 'rahasia.html'; // Ganti dengan nama file halaman sebelumnya
+    });
+    
+    document.getElementById('nextButton').addEventListener('click', function() {
+      window.location.href = 'rahasia.html'; // Ganti dengan nama file halaman rahasia
     });
   </script>
 
