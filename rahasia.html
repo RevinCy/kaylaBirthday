@@ -8,22 +8,56 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
   <style>
     :root {
-      --primary-color: #6a0dad;
-      --secondary-color: #0072ff;
-      --accent-color: #ff9e9e;
+      --primary-color: #f75c2e; /* Seventeen orange */
+      --secondary-color: #8caae6; /* Seventeen blue */
+      --accent-color: #cee5d0; /* Pastel mint green */
       --text-color: #2d3748;
     }
 
+    @font-face {
+      font-family: 'KpopFont';
+      src: url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+    }
+
     body {
-      background-color: #000;
-      min-height: 100vh;
+  background: linear-gradient(135deg, #e6e6fa, #d8bfd8); /* lavender & light purple */
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'KpopFont', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  position: relative;
+  overflow-x: hidden;
+  padding: 20px;
+
+  background-image: url('seventeen.jpg'); /* opsional: tambahkan gambar bertema Seventeen */
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  background-attachment: fixed;
+
+  color: #4a0072; /* warna ungu gelap elegan */
+}
+
+
+    /* Seventeen member photos as background patterns */
+    .seventeen-member {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: rgba(247, 92, 46, 0.8);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      position: relative;
-      overflow-x: hidden;
-      padding: 20px;
+      font-weight: bold;
+      color: white;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      font-size: 10px;
+      text-align: center;
+      opacity: 0.7;
+      z-index: -1;
+      text-shadow: 1px 1px 2px black;
     }
 
     .lock-screen {
@@ -32,7 +66,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: #000;
+      background: linear-gradient(45deg, #0c0c0c, #1a1a1a);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -47,7 +81,7 @@
 
     .lock-icon {
       font-size: clamp(3rem, 8vw, 4rem);
-      color: white;
+      color: var(--primary-color);
       margin-bottom: clamp(1rem, 4vw, 2rem);
       animation: pulse 2s infinite;
     }
@@ -59,12 +93,16 @@
       backdrop-filter: blur(10px);
       width: clamp(250px, 90%, 300px);
       text-align: center;
+      border: 2px solid var(--primary-color);
+      box-shadow: 0 0 15px rgba(247, 92, 46, 0.3);
     }
 
     .password-container h3 {
       color: white;
       margin-bottom: 1.5rem;
       font-size: clamp(1.2rem, 5vw, 1.5rem);
+      text-transform: uppercase;
+      letter-spacing: 2px;
     }
 
     .password-input {
@@ -82,25 +120,27 @@
 
     .password-input:focus {
       outline: none;
-      box-shadow: 0 0 0 2px var(--accent-color);
+      box-shadow: 0 0 0 2px var(--primary-color);
     }
 
     .unlock-button {
-      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      background: linear-gradient(135deg, var(--primary-color), #ff8562);
       color: white;
       border: none;
       border-radius: 50px;
       padding: 0.8rem 2rem;
       font-weight: 600;
       transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(106, 13, 173, 0.4);
+      box-shadow: 0 4px 15px rgba(247, 92, 46, 0.4);
       width: 100%;
       max-width: 200px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .unlock-button:hover {
       transform: translateY(-3px);
-      box-shadow: 0 7px 20px rgba(106, 13, 173, 0.5);
+      box-shadow: 0 7px 20px rgba(247, 92, 46, 0.5);
     }
 
     .error-message {
@@ -142,6 +182,13 @@
       margin: 0 auto;
       max-height: 80vh;
       overflow-y: auto;
+      border: 3px solid var(--primary-color);
+      /* Seventeen-themed pattern */
+      background-image: radial-gradient(rgba(255,255,255,0.95), rgba(255,255,255,0.8)), 
+                      url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><text x="50" y="50" font-family="Arial" font-size="20" text-anchor="middle" fill="%23f75c2e" dy=".35em">SVT</text></svg>');
+      background-size: cover, 100px 100px;
+      background-blend-mode: overlay;
+      
     }
 
     .secret-card.visible {
@@ -159,13 +206,14 @@
     .envelope {
       width: clamp(200px, 60vw, 300px);
       height: clamp(140px, 40vw, 200px);
-      background: linear-gradient(135deg, #ff7eb9, #ff65a3);
+      background: linear-gradient(135deg, var(--primary-color), #ff8562);
       margin: 0 auto;
       position: relative;
       border-radius: 0 0 20px 20px;
       transform-style: preserve-3d;
       transform-origin: top;
       transition: transform 1s;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
     }
 
     .envelope-flap {
@@ -174,7 +222,7 @@
       left: 0;
       width: 100%;
       height: 50%;
-      background: linear-gradient(135deg, #ff65a3, #7f7fd5);
+      background: linear-gradient(135deg, #ff8562, var(--secondary-color));
       transform-origin: top;
       transition: transform 1s;
       clip-path: polygon(0 0, 50% 100%, 100% 0);
@@ -195,6 +243,10 @@
       z-index: 1;
       transition: all 1s;
       transform: translateY(0);
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><text x="100" y="100" font-family="Arial" font-size="30" text-anchor="middle" fill="%23f75c2e" dy=".35em">SEVENTEEN</text></svg>');
+      background-size: cover;
+      background-blend-mode: overlay;
+      background-color: rgba(255, 255, 255, 0.9);
     }
 
     .envelope-opened .envelope-letter {
@@ -211,6 +263,8 @@
       -webkit-text-fill-color: transparent;
       position: relative;
       line-height: 1.3;
+      text-transform: uppercase;
+      letter-spacing: 2px;
     }
 
     .secret-card h1::after {
@@ -230,6 +284,9 @@
       line-height: 1.6;
       margin-bottom: 1.5rem;
       text-align: left;
+      background-color: rgba(255, 255, 255, 0.85);
+      padding: 10px;
+      border-radius: 8px;
     }
 
     .signature {
@@ -245,40 +302,43 @@
       border-radius: 1rem;
       padding: clamp(1rem, 4vw, 1.5rem);
       margin-top: 2rem;
-      border-left: 4px solid var(--accent-color);
+      border-left: 4px solid var(--primary-color);
       max-height: 0;
       overflow: hidden;
       opacity: 0;
       transition: all 0.8s ease;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
 
     /* Saat dibuka */
     .hidden-message.revealed {
-      max-height: 500px; /* Increased max-height */
+      max-height: 500px;
       overflow-y: auto;
       opacity: 1;
     }
 
     .reveal-button {
-      background: linear-gradient(135deg, var(--accent-color), #ffb6c1);
-      color: var(--text-color);
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
       border: none;
       border-radius: 50px;
       padding: 0.6rem 1.5rem;
       font-weight: 600;
       margin-top: 1.5rem;
       transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(255, 158, 158, 0.4);
+      box-shadow: 0 4px 15px rgba(247, 92, 46, 0.4);
       display: block;
       width: 100%;
       max-width: 300px;
       margin-left: auto;
       margin-right: auto;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .reveal-button:hover {
       transform: translateY(-2px);
-      box-shadow: 0 7px 20px rgba(255, 158, 158, 0.5);
+      box-shadow: 0 7px 20px rgba(247, 92, 46, 0.5);
     }
 
     .starry-background {
@@ -289,12 +349,26 @@
       height: 100%;
       pointer-events: none;
       z-index: -1;
+      background-color: #0c0c0c;
+      /* Seventeen themed background */
+      background-image: radial-gradient(rgba(0,0,0,0.9), rgba(0,0,0,1)), 
+                        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><text x="50" y="50" font-family="Arial" font-size="12" text-anchor="middle" fill="%23f75c2e" dy=".35em">S V T</text></svg>');
+      background-size: cover, 80px 80px;
+      background-blend-mode: overlay;
     }
 
     .star {
       position: absolute;
       background: white;
       border-radius: 50%;
+      animation: twinkle 4s infinite;
+      opacity: 0;
+    }
+
+    .diamond {
+      position: absolute;
+      font-size: clamp(12px, 3vw, 18px);
+      color: var(--primary-color);
       animation: twinkle 4s infinite;
       opacity: 0;
     }
@@ -308,7 +382,7 @@
       position: absolute;
       width: 100px;
       height: 2px;
-      background: linear-gradient(to right, rgba(255,255,255,0), white);
+      background: linear-gradient(to right, rgba(255,255,255,0), var(--primary-color));
       transform: rotate(-45deg);
       animation-name: shooting;
       animation-timing-function: ease-out;
@@ -330,6 +404,7 @@
       max-width: clamp(180px, 60vw, 250px);
       margin: 2rem auto;
       transition: all 0.3s ease;
+      border: 3px solid var(--primary-color);
     }
 
     .polaroid:hover {
@@ -337,26 +412,37 @@
     }
 
     .polaroid-img {
-      width: 100%;
-      height: clamp(100px, 30vw, 150px);
-      background-color: #f0f0f0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 1rem;
-      overflow: hidden;
-    }
+  width: 100%;
+  height: auto;
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: visible;
+}
+
+.svt-logo {
+  width: auto;
+  max-width: 80px;   /* batasi lebar maksimal */
+  max-height: 80px;  /* batasi tinggi maksimal */
+  object-fit: contain;
+  display: block;
+}
+
 
     .polaroid-img span {
       font-size: clamp(50px, 15vw, 80px);
     }
 
     .polaroid-caption {
-      font-family: 'Comic Sans MS', cursive;
+      font-family: 'KpopFont', 'Comic Sans MS', cursive;
       text-align: center;
       padding-bottom: 0.5rem;
       color: var(--text-color);
       font-size: clamp(0.8rem, 3vw, 1rem);
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     @keyframes pulse {
@@ -365,16 +451,16 @@
       100% { transform: scale(1); opacity: 1; }
     }
 
-    .heart {
+    .kpop-icon {
       position: absolute;
       font-size: clamp(16px, 4vw, 24px);
-      color: #ff6b6b;
-      animation: float-heart 4s linear infinite;
+      color: var(--primary-color);
+      animation: float-icon 4s linear infinite;
       z-index: -1;
       opacity: 0;
     }
 
-    @keyframes float-heart {
+    @keyframes float-icon {
       0% { transform: translateY(0) translateX(0) rotate(0); opacity: 0; }
       10% { opacity: 1; }
       90% { opacity: 0.5; }
@@ -387,7 +473,7 @@
       bottom: 20px;
       left: 50%;
       transform: translateX(-50%);
-      color: white;
+      color: var(--primary-color);
       font-size: 1.5rem;
       animation: bounce 2s infinite;
       opacity: 0;
@@ -403,6 +489,44 @@
       0%, 20%, 50%, 80%, 100% {transform: translateY(0) translateX(-50%);}
       40% {transform: translateY(-20px) translateX(-50%);}
       60% {transform: translateY(-10px) translateX(-50%);}
+    }
+
+    /* Seventeen logo styling */
+    .seventeen-logo {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      width: clamp(50px, 10vw, 80px);
+      height: auto;
+      opacity: 0.8;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><text x="50" y="50" font-family="Arial" font-size="40" font-weight="bold" text-anchor="middle" fill="%23f75c2e" dy=".35em">17</text></svg>');
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+
+    /* Carats (Seventeen fandom symbol) */
+    .carat-icon {
+      position: absolute;
+      font-size: clamp(14px, 3vw, 20px);
+      color: var(--primary-color);
+      opacity: 0.7;
+    }
+
+    /* Seventeen members bubbles */
+    .member-bubble {
+      position: absolute;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--primary-color);
+      color: white;
+      font-weight: bold;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      z-index: 2;
+      font-size: clamp(8px, 2vw, 12px);
+      opacity: 0.9;
+      text-transform: uppercase;
     }
 
     /* Extra responsiveness for very small screens */
@@ -421,6 +545,7 @@
       
       .polaroid-img {
         height: 80px;
+        overflow: visible;
       }
       
       .polaroid-img span {
@@ -488,11 +613,14 @@
         </div>
       </div>
       
+      <!-- Seventeen logo -->
+      <div class="seventeen-logo"></div>
+      
       <h1>Secret Message Kayla</h1>
       
       <div class="polaroid">
         <div class="polaroid-img">
-          <span>👑</span>
+          <img src="seventeen.jpg" alt="Seventeen Logo" class="svt-logo">
         </div>
         <div class="polaroid-caption">Sweet 16!</div>
       </div>
@@ -572,6 +700,13 @@
     const starryBackground = document.getElementById('starryBackground');
     const scrollIndicator = document.getElementById('scrollIndicator');
 
+    // Seventeen members data - untuk background
+    const seventeenMembers = [
+      "S.Coups", "Jeonghan", "Joshua", "Jun", "Hoshi", 
+      "Wonwoo", "Woozi", "DK", "Mingyu", "The8", 
+      "Seungkwan", "Vernon", "Dino"
+    ];
+
     // Focus on password input when page loads
     window.addEventListener('load', function() {
       passwordInput.focus();
@@ -589,7 +724,7 @@
       if (passwordInput.value === correctPassword) {
         lockScreen.classList.add('unlocked');
         setTimeout(() => {
-          createStarryBackground();
+          createSeventeenTheme();
           secretCard.classList.add('visible');
           
           // Show scroll indicator if content is scrollable
@@ -606,7 +741,8 @@
           
           setTimeout(() => {
             envelope.classList.add('envelope-opened');
-            createHearts();
+            createKpopIcons();
+            createSeventeenMemberBubbles();
           }, 1000);
         }, 800);
       } else {
@@ -632,32 +768,60 @@
           }
         }, 800);
       } else {
-        revealButton.textContent = 'Baca Pesan Tersembunyi';
+        revealButton.textContent = 'Secret Message';
       }
     });
 
-    // Fungsi untuk membuat background bintang
-    function createStarryBackground() {
-      // Optimized for mobile - create fewer stars on small screens
+    // Fungsi untuk membuat tema Seventeen
+    function createSeventeenTheme() {
+      // Optimized for mobile - create fewer elements on small screens
       const screenWidth = window.innerWidth;
-      const starCount = screenWidth < 768 ? 100 : 200;
+      const elementCount = screenWidth < 768 ? 80 : 150;
       
-      // Bintang biasa
-      for (let i = 0; i < starCount; i++) {
-        const star = document.createElement('div');
-        star.className = 'star';
-        star.style.left = `${Math.random() * 100}%`;
-        star.style.top = `${Math.random() * 100}%`;
-        
-        // Ukuran acak
-        const size = Math.random() * 3 + 1;
-        star.style.width = star.style.height = `${size}px`;
-        
-        // Animasi acak
-        star.style.animationDelay = `${Math.random() * 4}s`;
-        star.style.animationDuration = `${Math.random() * 2 + 3}s`;
-        
-        starryBackground.appendChild(star);
+      // Create K-pop themed elements
+      for (let i = 0; i < elementCount; i++) {
+        if (Math.random() > 0.7) {
+          // Create diamonds (representing Seventeen's logo/carats)
+          const diamond = document.createElement('div');
+          diamond.className = 'diamond';
+          diamond.innerHTML = '♦';
+          diamond.style.left = `${Math.random() * 100}%`;
+          diamond.style.top = `${Math.random() * 100}%`;
+          diamond.style.color = Math.random() > 0.5 ? '#f75c2e' : '#8caae6';
+          
+          // Animasi acak
+          diamond.style.animationDelay = `${Math.random() * 4}s`;
+          diamond.style.animationDuration = `${Math.random() * 2 + 3}s`;
+          
+          starryBackground.appendChild(diamond);
+        } else {
+          // Create stars
+          const star = document.createElement('div');
+          star.className = 'star';
+          star.style.left = `${Math.random() * 100}%`;
+          star.style.top = `${Math.random() * 100}%`;
+          
+          // Ukuran acak
+          const size = Math.random() * 3 + 1;
+          star.style.width = star.style.height = `${size}px`;
+          
+          // Animasi acak
+          star.style.animationDelay = `${Math.random() * 4}s`;
+          star.style.animationDuration = `${Math.random() * 2 + 3}s`;
+          
+          starryBackground.appendChild(star);
+        }
+      }
+
+      // Add Seventeen-inspired elements
+      const caratSymbols = ['♦', '💎', '✨', '🔶', '💫'];
+      for (let i = 0; i < 10; i++) {
+        const carat = document.createElement('div');
+        carat.className = 'carat-icon';
+        carat.innerHTML = caratSymbols[Math.floor(Math.random() * caratSymbols.length)];
+        carat.style.left = `${Math.random() * 90 + 5}%`;
+        carat.style.top = `${Math.random() * 90 + 5}%`;
+        secretCard.appendChild(carat);
       }
 
       // Shooting stars - fewer on mobile
@@ -665,6 +829,65 @@
       setInterval(() => {
         createShootingStar();
       }, shootingStarInterval);
+      
+      // Create Seventeen member circular elements
+      createSeventeenMemberElements();
+    }
+
+    // Function to create Seventeen member elements in the background
+    function createSeventeenMemberElements() {
+      const memberColors = ['#f75c2e', '#8caae6', '#ff8562', '#6b7fd7', '#ffa07a'];
+      
+      // Create Seventeen members as circular elements with their names
+      seventeenMembers.forEach((member, index) => {
+        const memberElement = document.createElement('div');
+        memberElement.className = 'seventeen-member';
+        memberElement.textContent = member;
+        
+        // Position randomly but not too close to edges
+        memberElement.style.left = `${10 + Math.random() * 80}%`;
+        memberElement.style.top = `${10 + Math.random() * 80}%`;
+        
+        // Random color from Seventeen palette
+        memberElement.style.backgroundColor = memberColors[Math.floor(Math.random() * memberColors.length)];
+        
+        // Random size
+        const size = 40 + Math.random() * 30;
+        memberElement.style.width = `${size}px`;
+        memberElement.style.height = `${size}px`;
+        
+        // Add to background
+        starryBackground.appendChild(memberElement);
+        
+        // Animation to make them move slowly
+        animateMemberElement(memberElement);
+      });
+    }
+    
+    // Function to animate member elements
+    function animateMemberElement(element) {
+      let x = parseFloat(element.style.left);
+      let y = parseFloat(element.style.top);
+      
+      // Random direction and speed
+      let xSpeed = (Math.random() - 0.5) * 0.2;
+      let ySpeed = (Math.random() - 0.5) * 0.2;
+      
+      function moveElement() {
+        x += xSpeed;
+        y += ySpeed;
+        
+        // Bounce off edges
+        if (x <= 5 || x >= 95) xSpeed = -xSpeed;
+        if (y <= 5 || y >= 95) ySpeed = -ySpeed;
+        
+        element.style.left = `${x}%`;
+        element.style.top = `${y}%`;
+        
+        requestAnimationFrame(moveElement);
+      }
+      
+      moveElement();
     }
 
     // Fungsi untuk membuat bintang jatuh
@@ -681,34 +904,203 @@
       }, 3000);
     }
 
-    // Fungsi untuk membuat efek hati mengambang
-    function createHearts() {
-      // Fewer hearts on mobile
+    // Fungsi untuk membuat efek K-pop icon mengambang
+    function createKpopIcons() {
+      // Fewer icons on mobile
       const screenWidth = window.innerWidth;
-      const heartInterval = screenWidth < 768 ? 1500 : 800;
+      const iconInterval = screenWidth < 768 ? 1500 : 800;
+      
+      const kpopEmojis = ['💎', '✨', '💫', '🎵', '🎤', '👑', '💖', '17'];
       
       setInterval(() => {
-        const heart = document.createElement('div');
-        heart.className = 'heart';
-        heart.innerHTML = '❤️';
-        heart.style.left = `${Math.random() * 90 + 5}%`;
-        heart.style.bottom = '10%';
-        heart.style.animationDuration = `${Math.random() * 2 + 3}s`;
-        document.body.appendChild(heart);
+        const icon = document.createElement('div');
+        icon.className = 'kpop-icon';
+        icon.innerHTML = kpopEmojis[Math.floor(Math.random() * kpopEmojis.length)];
+        icon.style.left = `${Math.random() * 90 + 5}%`;
+        icon.style.bottom = '10%';
+        icon.style.animationDuration = `${Math.random() * 2 + 3}s`;
+        document.body.appendChild(icon);
         
         setTimeout(() => {
-          heart.remove();
+          icon.remove();
         }, 5000);
-      }, heartInterval);
+      }, iconInterval);
+    }
+    
+    function createSeventeenMemberBubbles() {
+  const memberImages = {
+    'S.Coups': 's_coups.jpg',
+    'Jeonghan': 'jeonghan.jpeg',
+    'Joshua': 'joshua.png',
+    'Jun': 'jun.jpg',
+    'Hoshi': 'Hoshi.jpeg',
+    'Wonwoo': 'Wonwoo.jpg',
+    'Woozi': 'Woozi.jpeg',
+    'DK': 'DK.jpg',
+    'Mingyu': 'mingyu.png',
+    'The8': 'The8.jpg',
+    'Vernon': 'vernon.jpg',
+    'Dino': 'dino.jpg',
+  };
+
+  const memberNames = Object.keys(memberImages);
+
+  memberNames.forEach((member, index) => {
+    setTimeout(() => {
+      const bubble = document.createElement('img');
+      bubble.className = 'member-bubble';
+      bubble.src = memberImages[member];
+      bubble.alt = member;
+
+      // Ukuran random
+      const size = 40 + Math.random() * 20;
+      bubble.style.width = `${size}px`;
+      bubble.style.height = `${size}px`;
+
+      // Style umum
+      bubble.style.borderRadius = '50%';
+      bubble.style.objectFit = 'cover';
+      bubble.style.position = 'absolute';
+      bubble.style.zIndex = 1;
+      bubble.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.25)';
+      bubble.style.pointerEvents = 'none';
+
+      // Arah acak: top, bottom, left, right
+      const directions = ['top', 'bottom', 'left', 'right'];
+      const fromDir = directions[Math.floor(Math.random() * directions.length)];
+
+      let startX, startY, endX, endY;
+
+      switch (fromDir) {
+        case 'top':
+          startY = -10;
+          endY = 110;
+          startX = Math.random() * 100;
+          endX = startX + (Math.random() * 20 - 10); // sedikit geser kiri/kanan
+          break;
+        case 'bottom':
+          startY = 110;
+          endY = -10;
+          startX = Math.random() * 100;
+          endX = startX + (Math.random() * 20 - 10);
+          break;
+        case 'left':
+          startX = -10;
+          endX = 110;
+          startY = Math.random() * 100;
+          endY = startY + (Math.random() * 20 - 10);
+          break;
+        case 'right':
+          startX = 110;
+          endX = -10;
+          startY = Math.random() * 100;
+          endY = startY + (Math.random() * 20 - 10);
+          break;
+      }
+
+      bubble.style.left = `${startX}%`;
+      bubble.style.top = `${startY}%`;
+
+      // Tambahkan ke body
+      document.body.appendChild(bubble);
+
+      // Animasi gerakan ke posisi akhir
+      animateBubble(bubble, startX, startY, endX, endY);
+    }, index * 300);
+  });
+}
+
+function animateBubble(bubble, startX, startY, endX, endY) {
+  const duration = 10 + Math.random() * 10;
+
+  bubble.style.transition = `top ${duration}s linear, left ${duration}s linear`;
+
+  setTimeout(() => {
+    bubble.style.left = `${endX}%`;
+    bubble.style.top = `${endY}%`;
+
+    // Hapus bubble setelah animasi selesai
+    setTimeout(() => {
+      bubble.remove();
+    }, duration * 1000);
+  }, 100);
+}
+
+    
+    // Create a special Seventeen logo banner
+    function createSeventeenBanner() {
+      const banner = document.createElement('div');
+      banner.style.position = 'absolute';
+      banner.style.top = '10px';
+      banner.style.left = '50%';
+      banner.style.transform = 'translateX(-50%)';
+      banner.style.background = 'linear-gradient(135deg, #f75c2e, #8caae6)';
+      banner.style.padding = '5px 15px';
+      banner.style.borderRadius = '30px';
+      banner.style.color = 'white';
+      banner.style.fontWeight = 'bold';
+      banner.style.fontSize = '14px';
+      banner.style.boxShadow = '0 3px 10px rgba(0,0,0,0.2)';
+      banner.textContent = 'SEVENTEEN';
+      
+      secretCard.appendChild(banner);
     }
     
     // Handle viewport resize
     window.addEventListener('resize', function() {
-      // Clear and recreate stars when viewport changes significantly
+      // Clear and recreate theme elements when viewport changes significantly
       if (lockScreen.classList.contains('unlocked')) {
         starryBackground.innerHTML = '';
-        createStarryBackground();
+        createSeventeenTheme();
       }
+    });
+    
+    // Create a polaroid gallery of Seventeen (represented with emoji/text since we can't use actual images)
+    function createSeventeenGallery() {
+      const galleryContainer = document.createElement('div');
+      galleryContainer.style.display = 'flex';
+      galleryContainer.style.flexWrap = 'wrap';
+      galleryContainer.style.justifyContent = 'center';
+      galleryContainer.style.gap = '10px';
+      galleryContainer.style.marginTop = '20px';
+      galleryContainer.style.marginBottom = '20px';
+      
+      // Create mini polaroids for each member (represented with text)
+      seventeenMembers.slice(0, 4).forEach(member => {
+        const miniPolaroid = document.createElement('div');
+        miniPolaroid.className = 'polaroid';
+        miniPolaroid.style.margin = '5px';
+        miniPolaroid.style.transform = `rotate(${Math.random() * 10 - 5}deg)`;
+        miniPolaroid.style.maxWidth = '100px';
+        
+        const polaroidImg = document.createElement('div');
+        polaroidImg.className = 'polaroid-img';
+        polaroidImg.style.height = '70px';
+        polaroidImg.style.display = 'flex';
+        polaroidImg.style.alignItems = 'center';
+        polaroidImg.style.justifyContent = 'center';
+        polaroidImg.style.backgroundColor = '#f5f5f5';
+        polaroidImg.style.fontSize = '24px';
+        polaroidImg.innerHTML = '17';
+        
+        const polaroidCaption = document.createElement('div');
+        polaroidCaption.className = 'polaroid-caption';
+        polaroidCaption.textContent = member;
+        
+        miniPolaroid.appendChild(polaroidImg);
+        miniPolaroid.appendChild(polaroidCaption);
+        galleryContainer.appendChild(miniPolaroid);
+      });
+      
+      // Add the gallery after the main polaroid
+      const mainPolaroid = document.querySelector('.polaroid');
+      mainPolaroid.parentNode.insertBefore(galleryContainer, mainPolaroid.nextSibling);
+    }
+    
+    // Call additional functions after password is correct to create more Seventeen elements
+    document.addEventListener('DOMContentLoaded', function() {
+      // These will be called after password verification
+      // but we set them up here so they're ready
     });
   </script>
 </body>
